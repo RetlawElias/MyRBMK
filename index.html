@@ -1,0 +1,255 @@
+<!DOCTYPE html> 
+<html lang="DE-de">
+<head>
+    <title>myRBMK</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="logic.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body id="bd">
+<canvas id="canva"></canvas>
+
+<div style="float: Right; position: relative; width: 350px; height: 900px; background-color: rgb(202, 202, 202);">
+
+<div style="float: left; width: 100px; margin-left: 10px; margin-top: 10px;">
+	<div class="RepairButton" id="b2">
+        <p style="margin-bottom: 0px;">Turbine</p><p style="margin-top: 0px;" id="TCost"   >0</p>
+    </div> 
+    <br>
+	<div class="RepairButton" id="b3" style="top: 10px;">
+        <p style="margin-bottom: 0px;"  >Pipes</p><p style="margin-top: 0px;" id="PCost"   >0</p>
+    </div> 
+    <br>
+	<div class="RepairButton" id="b4" style="top: 20px;">
+        <p style="margin-bottom: 0px;"  >Fuel</p><p style="margin-top: 0px;" id="FCost"   >0</p>
+    </div>
+    <br>
+	<div class="RepairButton" id="b5" style="top: 30px;">
+        <p style="margin-bottom: 0px;"  >Control Rods</p><p style="margin-top: 0px;" id="CCost"   >0</p> 
+    </div>
+</div>
+
+
+
+
+
+<div style="float: right; width: 230px; height: 60px; margin-top: 30px;">
+  <div style="width: 249px;">
+    <button class="ActionButton" id="b1" type="button">Sell Energy</button>
+    <p style="margin-right:10px; float: right;" id="PRange" >0</p>
+  </div>
+  <div style="width: 249px;">
+    <button class="ActionButton" id="b6" type="button">Upgrade Height</button>
+    <p style="margin-right:10px; float: right;" id="HCost" >0</p>
+  </div>
+  <br>
+  <div style="width: 249px;">
+      <button class="ActionButton" id="b7" type="button">Upgrade Width</button>
+      <p style="margin-right:10px; float: right;" id="WCost" >0</p>
+  </div>
+  <br>
+  <button style="width:100px; height:50px; float: right; margin-right: 40px; margin-top: 50px;" id="b8" type="button">Upgrades</button>
+  <button style="width:100px; height:50px; float: right; margin-right: 40px; margin-top: 5px;" id="b9" type="button">Fuel Editor</button>
+  <br>
+  
+  
+
+<div style="float: right; width: 300px; height: 240px; margin-top: 70px;">
+    <div style="float: left; width: 160px; height: 300px;">
+      <div id="grid6" class="grid"> </div>
+      <div id="grid5" class="grid"> </div>
+      <div id="grid1" class="grid"> </div>
+      <div id="grid0" class="grid"> </div>
+      <div id="grid7" class="grid"> </div>
+      <div id="grid2" class="grid"> </div>
+    </div>
+    <div style="float: right; width: 140px; height: 300px;">
+      <div id="grid4" class="grid"> </div>
+      <div id="grid3" class="grid"> </div>
+      <div id="grid8" class="grid"> </div>
+      </div>
+</div>
+
+<div style="float: Right; margin-right: 30px; margin-top: 40px;">
+
+    <div style="width: 300px; height: 100px;">
+      <div id="alarm" style="float: left; width: 80px; height: 80px; background-color: rgb(63, 63, 63); margin-left: 50px;">
+        <p  >!!!ALARM!!!</p><p id="alarmtext"   >0</p>
+      </div>
+      <div id="cooling" style="float: right; width: 80px; height: 80px; background-color: rgb(61, 61, 61); margin-right: 50px;">
+        <p  >Emergency Cooling</p><p id="coller"   >0</p>
+      </div>
+    </div>
+    
+    <div style="width: 300px; height: 100px; ">
+        <div style="width: 200px; height: 50px;">
+            <p style="float: left;">Automated Fulx:</p>
+            <input style="width: 50px; float: right;" type="number" id="flux"><br>
+        </div>
+        <div style="width: 300px; height: 50px;">
+            <p style="float: left;">Turbine Efficiency:</p>
+            <input style="float: right;" id="effi" type="range"><br>
+        </div>
+    </div>
+</div> 
+
+<button type="button" id="DarkMode">L/D</button>
+
+
+
+</div>
+</div>
+
+<script>
+</script>
+
+
+
+
+
+
+<div id="Upgrades" style="display: none; top: 100px; left: 150px; float: left; position: absolute; background-color:lightgrey; width: 1350px; height: 700px; z-index: 999;"><h1  >Upgrades</h1> 
+
+    <Button onclick="SafeRouteButton()" id="SafeButton" style="width: 150px; height: 100px; position: absolute; top: 60%; left: 23%;">Safe Route</Button>
+    <Button onclick="UpgradeButtonOff()" id="ProfitButton" style="width: 150px; height: 100px; position: absolute; top: 60%; left: 66%;">Profit Route</Button>
+    <Button onclick="UpgradeButtonOff()" id="UpgradeWindow" style="width: 100px; height: 50px; position: absolute; top: 90%; left: 45%;">Back</Button>
+
+
+    <Button onclick="UpgradePipesOne()" id="UPipes1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 15%;">Pipes 1</Button>
+    <pre style="position: absolute; top: 19%; left: 21.5%; font-size: 14px;">+10% Heat Resistence
+    -5% Repair Cost</pre>
+    <Button onclick="UpgradeTurbineOne()" id="UTurbine1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 35%;">Turbine 1</Button>
+    <pre style="position: absolute; top: 19%; left: 42%; font-size: 14px;">+5% Income
+    -5% Repair Cost</pre>
+    <Button onclick="UpgradeControlOne()" id="UControl1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 60%;">Control Rod 1</Button>
+    <pre style="position: absolute; top: 19%; left: 67%; font-size: 14px;">+5% Less Damage
+    -5% Repair Cost</pre>
+    <Button onclick="UpgradeFuelOne()" id="UFuel1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 80%;">Fuel 1</Button>
+    <pre style="position: absolute; top: 19%; left: 87%; font-size: 14px;">+5% More Efficency
+    -5% Repair Cost</pre>
+    <Button onclick="UpgradePipesTwo()" id="UPipes2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 15%;">Pipes 2</Button>
+    <pre style="position: absolute; top: 39%; left: 21.5%; font-size: 14px;">+20% Heat Resistence
+    -10% Repair Cost</pre>
+    <Button onclick="UpgradeTurbineTwo()" id="UTurbine2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 35%;">Turbine 2</Button>
+    <pre style="position: absolute; top: 39%; left: 42%; font-size: 14px;">+10% Income
+    -10% Repair Cost</pre>
+    <Button onclick="UpgradeControlTwo()" id="UControl2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 60%;">Control Rod 2</Button>
+    <pre style="position: absolute; top: 39%; left: 67%; font-size: 14px;">+10% Less Damage
+    -5% Repair Cost</pre>
+    <Button onclick="UpgradeFuelTwo()" id="UFuel2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 80%;">Fuel 2</Button>
+    <pre style="position: absolute; top: 39%; left: 87%; font-size: 14px;">+10% More Efficency
+    -5% Repair Cost</pre>
+    
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="SafeUpgrades" style="display: none; top: 100px; left: 150px; position: absolute; background-color:lightgrey; width: 1350px; height: 700px; z-index: 999;">
+    <h1  >Save Route</h1>
+
+
+    <Button onclick="UpgradeSafeOff()" id="SafeUpgradeWindow" style="width: 100px; height: 50px; position: absolute; top: 90%; left: 45%;">Back</Button>
+
+    <Button onclick="LeadPipes()" id="LeadPipes" style="width: 100px; height: 75px; position: absolute; top: 20%; left: 10%;">Lead Pipes</Button>
+<pre style="position: absolute; top: 19%; left: 18.5%; font-size: 14px;">+25% Heat Resistence
++10% Repair Cost
++10% Repair Speed</pre>
+
+<Button onclick="SturdyTurbine()" id="SturdyTurbine" style="width: 100px; height: 75px; position: absolute; top: 20%; left: 30%;">Sturdy Turbine</Button>
+<pre style="position: absolute; top: 19%; left: 39%; font-size: 14px;">-10% Income
++10% Repair Cost
++20% More Health
++10% Repair Speed</pre>
+
+<Button onclick="CadmiumRods()" id="CadmiumRods" style="width: 100px; height: 75px; position: absolute; top: 20%; left: 55%;">Cadmium Control Rods</Button>
+<pre style="position: absolute; top: 19%; left: 64%; font-size: 14px;">+20% Less Damage
++15% Repair Cost
++10% Repair Speed</pre>
+
+<Button onclick="EightyUranium()" id="80Uranium" style="width: 100px; height: 75px; position: absolute; top: 20%; left: 75%;">80% Uranium Mixture</Button>
+<pre style="position: absolute; top: 19%; left: 84%; font-size: 14px;">-5% More Efficency
+-20% Repair Cost
+-10% Repair Speed</pre>
+
+<Button onclick="OsmiumPipes()" id="OsmiumPipes" style="width: 100px; height: 75px; position: absolute; top: 40%; left: 10%;">Osmium Pipes</Button>
+<pre style="position: absolute; top: 39%; left: 18.5%; font-size: 14px;">+50% Heat Resistence
++20% Repair Cost
++50% Repair Speed</pre>
+
+<Button onclick="MegaTurbine()" id="MegaTurbine" style="width: 100px; height: 75px; position: absolute; top: 40%; left: 30%;">Mega Turbine</Button>
+<pre style="position: absolute; top: 39%; left: 39%; font-size: 14px;">-10% Income
++15% Repair Cost
++50% More Health
++20% Repair Speed</pre>
+
+<Button onclick="DoubleLinedRods()" id="DoubleLinedRods" style="width: 100px; height: 75px; position: absolute; top: 40%; left: 55%;">Double Lined Cadmium Rods</Button>
+<pre style="position: absolute; top: 39%; left: 64%; font-size: 14px;">+50% Less Damage
++35% Repair Cost
++20% Repair Speed</pre>
+
+<Button onclick="SixtyUranium()" id="60Uranium" style="width: 100px; height: 75px; position: absolute; top: 40%; left: 75%;">60% Uranium Mixture</Button>
+<pre style="position: absolute; top: 39%; left: 84%; font-size: 14px;">-15% More Efficency
+-40% Repair Cost
+-20% Repair Speed</pre>
+
+</div>
+
+<div id="MixtureEditor" style="display: none; top: 100px; left: 150px; position: absolute; background-color:lightgrey; width: 1350px; height: 700px; z-index: 999;">
+    <h1  >Fuel Editor</h1>
+    <div style="width: 1300px; height: 900px;">
+        <div style="width: 450px; height: 350px; background-color: azure; border: 1px solid black; margin-left: 30px; margin-top: 50px; float: left;">
+        <h1 style="width: 450px; margin-top: 10px; margin-bottom: 10px;"  >Ordering Terminal</h1>
+        <select onchange="UpdateTooltip(this.value)" style="border: 2px solid black; width: 150px; height: 200px; float: left; margin-top: 10px; margin-left: 10px; background-color:rgb(241, 213, 241)" id="Fueltype" size="7">
+            <option value="0" id="opt0">Uranium</option>
+            <option value="1" id="opt1">Plutonium</option>
+            <option value="2" id="opt2">Thorium</option>
+            <option value="3" id="opt3">Americium</option>
+            <option value="4" id="opt4">Uranium</option>
+            <option value="5" id="opt5">Plutonium</option>
+            <option value="6" id="opt6">Thorium</option>
+        </select>
+        <div id="ToolTip" style="border: 2px solid black; float: left; margin-left: 10px; width: 270px; height: 200px; background-color: whitesmoke; margin-top: 10px;">
+            <h2 id="Name"   style="margin-bottom: 5px;">FUELTYPE</h2>
+            <div style="width: 250px; height: 25px;">
+                <p style="margin-top: 2px; margin-bottom: 2px; float: left; margin-left: 10px;">Reactivity: </p><p id="Reactivity" style="margin-top: 2px; margin-bottom: 2px; float: right; margin-right: 10px;">R</p>
+            </div>
+            <div style="width: 250px; height: 25px;">
+                <p style="margin-top: 2px; margin-bottom: 2px; float: left; margin-left: 10px;">Health: </p><p id="Health" style="margin-top: 2px; margin-bottom: 2px; float: right; margin-right: 10px;">R</p>
+            </div>
+            <div style="width: 250px; height: 25px;">
+                <p style="margin-top: 2px; margin-bottom: 2px; float: left; margin-left: 10px;">Neutron-Type: </p><p id="NeutronType" style="margin-top: 2px; margin-bottom: 2px; float: right; margin-right: 10px;">R</p>
+            </div>
+            <br>
+            <div style="width: 250px; height: 25px;">
+                <p style="margin-top: 2px; margin-bottom: 2px; float: left; margin-left: 10px;">Price: </p><p id="Price" style="margin-top: 2px; margin-bottom: 2px; float: right; margin-right: 10px;">R</p>
+            </div>
+        </div>
+        <button style="border: 2px solid black; float: left; margin-top: 10px; margin-left: 15px; width: 420px; height: 60px; font-size: 30px; background-color: #aaeeaa;">Order Fuel</button>
+        </div>
+        
+        
+        <div style="width: 750px; height: 350px; background-color: azure; border: 1px solid black; margin-left: 30px; margin-top: 50px; float: right;">
+        <h1 style="width: 450px; margin-top: 10px; margin-bottom: 10px; margin-left: 160px;"  >Fuel Rod Manager</h1>
+        <div style="width: 40px; height: 200px; background-color: green;"></div>
+        
+
+
+        <Button onclick="MixtureButtonOff()" id="MixtureBack" style="width: 100px; height: 50px; position: absolute; top: 90%; left: 45%;">Back</Button>
+    </div>
+    </div>
+</div>
+
+
+</body>
+</html>

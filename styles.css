@@ -1,0 +1,45 @@
+p {
+    text-align: center;
+}
+
+h1 {
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #fbfbfb;
+}
+
+.RepairButton {
+    float: left; 
+    position: relative; 
+    width: 80px; 
+    height: 80px; 
+    background-color: red;
+    border: 1px solid black;
+}
+
+.Grid {
+    float: left; 
+    width: 80px; 
+    height: 80px; 
+    left: 20px;
+}
+
+#DarkMode {
+    float: right; 
+    width:20px; 
+    height:20px;
+}
+
+.ActionButton {
+    width:100px; 
+    height:50px; 
+    float: right; 
+    margin-right: 60px;
+}
