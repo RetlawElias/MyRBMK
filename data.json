@@ -1,0 +1,64 @@
+{
+    "URANIUM_233":
+    {
+        "Name": "Uranium-233",
+        "Reactivity": 6,
+        "Health": 60,
+        "NeutronType" : "Extremly Fast",
+        "Cost" : 10000
+    },
+
+    "URANIUM_235":
+    {
+        "Name" : "Uranium-235",
+        "Reactivity" : 40,
+        "Health" : 140,
+        "NeutronType" : "Very Fast",
+        "Cost" : 40000
+    },
+
+    "URANIUM_238":
+    {
+        "Name" : "Uranium-238",
+        "Reactivity" : 10,
+        "Health" : 100,
+        "NeutronType" : "Normal",
+        "Cost" : 13000
+    },
+
+    "THORIUM_232":
+    {
+        "Name" : "Thorium-232",
+        "Reactivity" : 16,
+        "Health" : 200,
+        "NeutronType" : "Slow",
+        "Cost" : 8000
+    },
+
+    "PLUTONIUM_239":
+    {
+        "Name" : "Plutonium-239",
+        "Reactivity" : 80,
+        "Health" : 130,
+        "NeutronType" : "Very Fast",
+        "Cost" : 80000
+    },
+
+    "NEPTUNIUM_238":
+    {
+        "Name" : "Neptunium-239",
+        "Reactivity" : 20,
+        "Health" : 50,
+        "NeutronType" : "Extremly Fast",
+        "Cost" : 25000
+    },
+
+    "AMERICIUM_239":
+    {
+        "Name" : "Americium-239",
+        "Reactivity" : 60,
+        "Health" : 70,
+        "NeutronType" : "Normal",
+        "Cost" : 40000
+    }
+}

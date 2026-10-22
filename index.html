@@ -3,7 +3,7 @@
 <head>
     <title>myRBMK</title>
     <link rel="stylesheet" href="styles.css">
-    <script type="module" src="logic.js"></script>
+    <script type="module" src="Scripts/logic.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 
@@ -111,46 +111,36 @@
 
 <div id="Upgrades" style="display: none; top: 100px; left: 150px; float: left; position: absolute; background-color:lightgrey; width: 1350px; height: 700px; z-index: 999;"><h1  >Upgrades</h1> 
 
-    <Button onclick="SafeRouteButton()" id="SafeButton" style="width: 150px; height: 100px; position: absolute; top: 60%; left: 23%;">Safe Route</Button>
-    <Button onclick="UpgradeButtonOff()" id="ProfitButton" style="width: 150px; height: 100px; position: absolute; top: 60%; left: 66%;">Profit Route</Button>
-    <Button onclick="UpgradeButtonOff()" id="UpgradeWindow" style="width: 100px; height: 50px; position: absolute; top: 90%; left: 45%;">Back</Button>
+    <Button id="SafeButton" style="width: 150px; height: 100px; position: absolute; top: 60%; left: 23%;">Safe Route</Button>
+    <Button id="ProfitButton" style="width: 150px; height: 100px; position: absolute; top: 60%; left: 66%;">Profit Route</Button>
+    <Button id="UpgradeWindow" style="width: 100px; height: 50px; position: absolute; top: 90%; left: 45%;">Back</Button>
 
 
-    <Button onclick="UpgradePipesOne()" id="UPipes1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 15%;">Pipes 1</Button>
+    <Button id="UPipes1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 15%;">Pipes 1</Button>
     <pre style="position: absolute; top: 19%; left: 21.5%; font-size: 14px;">+10% Heat Resistence
     -5% Repair Cost</pre>
-    <Button onclick="UpgradeTurbineOne()" id="UTurbine1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 35%;">Turbine 1</Button>
+    <Button id="UTurbine1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 35%;">Turbine 1</Button>
     <pre style="position: absolute; top: 19%; left: 42%; font-size: 14px;">+5% Income
     -5% Repair Cost</pre>
-    <Button onclick="UpgradeControlOne()" id="UControl1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 60%;">Control Rod 1</Button>
+    <Button id="UControl1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 60%;">Control Rod 1</Button>
     <pre style="position: absolute; top: 19%; left: 67%; font-size: 14px;">+5% Less Damage
     -5% Repair Cost</pre>
-    <Button onclick="UpgradeFuelOne()" id="UFuel1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 80%;">Fuel 1</Button>
+    <Button id="UFuel1" style="width: 80px; height: 50px; position: absolute; top: 20%; left: 80%;">Fuel 1</Button>
     <pre style="position: absolute; top: 19%; left: 87%; font-size: 14px;">+5% More Efficency
     -5% Repair Cost</pre>
-    <Button onclick="UpgradePipesTwo()" id="UPipes2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 15%;">Pipes 2</Button>
+    <Button id="UPipes2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 15%;">Pipes 2</Button>
     <pre style="position: absolute; top: 39%; left: 21.5%; font-size: 14px;">+20% Heat Resistence
     -10% Repair Cost</pre>
-    <Button onclick="UpgradeTurbineTwo()" id="UTurbine2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 35%;">Turbine 2</Button>
+    <Button id="UTurbine2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 35%;">Turbine 2</Button>
     <pre style="position: absolute; top: 39%; left: 42%; font-size: 14px;">+10% Income
     -10% Repair Cost</pre>
-    <Button onclick="UpgradeControlTwo()" id="UControl2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 60%;">Control Rod 2</Button>
+    <Button id="UControl2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 60%;">Control Rod 2</Button>
     <pre style="position: absolute; top: 39%; left: 67%; font-size: 14px;">+10% Less Damage
     -5% Repair Cost</pre>
-    <Button onclick="UpgradeFuelTwo()" id="UFuel2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 80%;">Fuel 2</Button>
+    <Button id="UFuel2" style="width: 80px; height: 50px; position: absolute; top: 40%; left: 80%;">Fuel 2</Button>
     <pre style="position: absolute; top: 39%; left: 87%; font-size: 14px;">+10% More Efficency
     -5% Repair Cost</pre>
-    
-    
 </div>
-
-
-
-
-
-
-
-
 
 
 

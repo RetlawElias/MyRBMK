@@ -5,6 +5,11 @@ document.addEventListener("DOMContentLoaded", () =>
     startGame();
 });
 
+window.addEventListener("resize", function()
+{
+    ResizeGUI();
+})
+
 
 // Game Management
 var debug = false;
@@ -71,7 +76,7 @@ var quota = [2500,10000,20000,40000,100000,150000,200000,250000,300000,450000,50
 var quotaLevel = 1;
 var soldEnergy = 0;
 var UpgradeCost = 1000;
-var FissionEvents = 2;
+var MaxFissionEvents = 4;
 var HeatResist = 1;
 var UpgradePoints = 0;
 var Income = 1;
@@ -99,67 +104,48 @@ var mixtureName = [];
 var mixtureCost = 0;
 var mixtureReactivity = 0;
 var mixtureHealth = 0;
+var Elements = []
+var currentNeutronSpeedType = "Very Fast";
+
+var canvas;
 
 
-const Elements = Object.freeze({
-    URANIUM_233: 0,
-    URANIUM_235: 1,
-    URANIUM_238: 2,
-    THORIUM_232: 3,
-    PLUTONIUM_239: 4,
-    NEPTUNIUM_238: 5,
-    AMERICIUM_239: 6
-});
+function ResizeGUI()
+{
+    canvas.width = window.innerWidth / 1.5;
+    canvas.height = window.innerHeight;
+    cellSize = window.innerHeight / 50;
+    cellDistance = window.innerHeight / 40;
+    NeutronSize = window.innerHeight / 100;
+    cellMarginTop = window.innerHeight / 25;
+    cellMarginLeft = window.innerWidth / 25;
+}
 
-const ElementsReactivitys = Object.freeze({
-    URANIUM_233: 6,
-    URANIUM_235: 40,
-    URANIUM_238: 10,
-    THORIUM_232: 16,
-    PLUTONIUM_239: 80,
-    NEPTUNIUM_238: 20,
-    AMERICIUM_239: 60
-});
 
-const ElementsNames = Object.freeze({
-    URANIUM_233: "Uranium-233",
-    URANIUM_235: "Uranium-235",
-    URANIUM_238: "Uranium-238",
-    THORIUM_232: "Thorium-232",
-    PLUTONIUM_239: "Plutonium-239",
-    NEPTUNIUM_238: "Neptunium-238",
-    AMERICIUM_239: "Americium-239"
-});
+async function fetchElements()
+{
+    try 
+    {
+        const response = await fetch('./data.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
 
-const ElementsHealth = Object.freeze({
-    URANIUM_233: 60,
-    URANIUM_235: 140,
-    URANIUM_238: 100,
-    THORIUM_232: 200,
-    PLUTONIUM_239: 130,
-    NEPTUNIUM_238: 50,
-    AMERICIUM_239: 70
-});
+        for(let i = 0; i < data.length; i++)
+        {
+            Elements.push(data[i]);
+        }
+    
+        console.log(Elements);
+    } 
+    catch (error) 
+    {
+        console.error("Failed to fetch JSON:", error);
+    }
+}
 
-const ElementsNeutronType = Object.freeze({
-    URANIUM_233: "Extremly Fast",
-    URANIUM_235: "Very Fast",
-    URANIUM_238: "Normal",
-    THORIUM_232: "Slow",
-    PLUTONIUM_239: "Very Fast",
-    NEPTUNIUM_238: "Extremly Fast",
-    AMERICIUM_239: "Normal"
-});
-
-const ElementsCost = Object.freeze({
-    URANIUM_233: 10000,
-    URANIUM_235: 40000,
-    URANIUM_238: 13000,
-    THORIUM_232: 8000,
-    PLUTONIUM_239: 80000,
-    NEPTUNIUM_238: 25000,
-    AMERICIUM_239: 40000
-});
 
 function mixtureClear()
 {
@@ -240,13 +226,27 @@ function AddOnclickListeners()
     document.getElementById("b8").onclick = UpgradeButtonOn;
     document.getElementById("b9").onclick = MixtureButtonOn;
     document.getElementById("DarkMode").onclick = DarkMode;
+    document.getElementById("SafeButton").onclick = SafeRouteButton;
+    document.getElementById("ProfitButton").onclick = UpgradeButtonOff;
+    document.getElementById("UpgradeWindow").onclick = UpgradeButtonOff;
+
+    document.getElementById("UPipes1").onclick = UpgradePipesOne;
+    document.getElementById("UPipes2").onclick = UpgradePipesTwo;
+    document.getElementById("UTurbine1").onclick = UpgradeTurbineOne;
+    document.getElementById("UTurbine2").onclick = UpgradeTurbineTwo;
+    document.getElementById("UFuel1").onclick = UpgradeFuelOne;
+    document.getElementById("UFuel2").onclick = UpgradeFuelTwo;
+    document.getElementById("UControl1").onclick = UpgradeControlOne;
+    document.getElementById("UControl2").onclick = UpgradeControlTwo;
 }
 
 
 
 function startGame() 
 {
+    canvas = document.getElementById("canva");
     colorGrid();
+    fetchElements();
     MapDesign = ['W','C','W','W','W','W','W','F','F','F','W','W','W','W','W','C','W','W','W','W','W','F','F','F','W','W','W','W','W','C','W']; // X * 15 + 2 
         InitializeMap(Height,Width, water, graphite);
     myGameArea.start();
@@ -257,27 +257,24 @@ function startGame()
 var myGameArea = {
     canvas : document.getElementById("canva"),
     start : function() {
-	    this.canvas.width = window.innerWidth - 400;
-        this.canvas.height = window.innerHeight - 100;
-        cellMarginLeft = document.getElementById("canva").width / (4 * ReactorSize);
-            this.context = this.canvas.getContext("2d");
-            document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-            this.frameNo = 0;
-            this.interval = setInterval(updateGameArea, 20);
-	 window.addEventListener('keydown', function (e) {
-            if (e.key === "ArrowDown" && Cooldown <= 0 && !RepairControlRod) {
-		Cooldown = CooldownInterval;
-                ControlRodDepth = Math.max(0, ControlRodDepth - 1);
-            } else if (e.key === "ArrowUp" && Cooldown <= 0 && !RepairControlRod) {
-		Cooldown = CooldownInterval;
-                ControlRodDepth = Math.min(Height, ControlRodDepth + 1);
-            }
-	});
-    window.addEventListener('resize', function() {
-        document.getElementById("canva").width = window.innerWidth - 400;
-        document.getElementById("canva").height = window.innerHeight - 100;
-        cellMarginLeft = document.getElementById("canva").width / (4 * ReactorSize);
-    });
+	    ResizeGUI();
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;
+        this.interval = setInterval(updateGameArea, 20);
+	    window.addEventListener('keydown', function (e) 
+        {
+            if (e.key === "ArrowDown" && Cooldown <= 0 && !RepairControlRod) 
+                {
+		            Cooldown = CooldownInterval;
+                    ControlRodDepth = Math.max(0, ControlRodDepth - 1);
+                } 
+                else if (e.key === "ArrowUp" && Cooldown <= 0 && !RepairControlRod) 
+                {
+		            Cooldown = CooldownInterval;
+                    ControlRodDepth = Math.min(Height, ControlRodDepth + 1);
+                }
+	    });
 
     },
     updateSize : function()
@@ -303,11 +300,11 @@ function coolEffect(x,y,neu)
     //neutrons = [];
     for(let i = 0; i < 100; i++)
     {
-        neutrons.push(new neutron(x, y, "shock"));
+        neutrons.push(new neutron(x, y, "shock", currentNeutronSpeedType));
     }
     for(let i = 0; i < 50; i++)
     {
-        neutrons.push(new neutron(x, y, "fire"));
+        neutrons.push(new neutron(x, y, "fire", currentNeutronSpeedType));
     }
 
 }
@@ -728,7 +725,7 @@ function updateGameArea() {
     if(RepairTurbine)
     {
         TurbineHealth += TurbineRepairSpeed;
-	if(TurbineHealth >= 100)
+	    if(TurbineHealth >= 100)
         {
             RepairTurbine = false;
             TurbineHealth = 100;
@@ -762,11 +759,11 @@ function updateGameArea() {
 
     if(EnergyOutput * 160 < quota[quotaLevel])
     {
-         ctx.fillStyle = "orange";
-         if(EnergyOutput * 200 < quota[quotaLevel])
-         {
-             ctx.fillStyle = "red";
-         }
+        ctx.fillStyle = "orange";
+        if(EnergyOutput * 200 < quota[quotaLevel])
+        {
+            ctx.fillStyle = "red";
+        }
     }
     else if (EnergyOutput * 100 >= quota[quotaLevel])
     {
@@ -800,7 +797,7 @@ function updateGameArea() {
           neutrons.shift();
         }
 
-        Explosion = new neutron(1000 / 2, 1000 / 2, "Explo");
+        Explosion = new neutron(1000 / 2, 1000 / 2, "Explo", currentNeutronSpeedType);
 
 	    
         
@@ -850,82 +847,81 @@ function updateGameArea() {
 	    	if(neutrons[i].typ == "shock")
 	    	{
 	            neutrons[i].newPos();
-		    neutrons[i].lifetime -= 0.05;
+		        neutrons[i].lifetime -= 0.05;
 	    	}
 	    	else
  	    	{
 	            neutrons[i].newPosi();
-		    neutrons[i].lifetime = 0;
+		        neutrons[i].lifetime = 0;
 	    	}
-		neutrons[i].time++;
+
+		    neutrons[i].time++;
 		if(neutrons[i].time >= 7)
 		{
 		    neutrons[i].active = true;
 		}
-            	neutrons[i].moveAngle = 0;
-	    	drawPixels(neutrons[i].x, neutrons[i].y, neutrons[i].lifetime, neutrons[i].typ, neutrons[i].active);
-	    	const collision = checkCollision(neutrons[i], cellDistance, cellMarginTop, cellMarginLeft, supermap);
+        neutrons[i].moveAngle = 0;
+	    drawPixels(neutrons[i].x, neutrons[i].y, neutrons[i].lifetime, neutrons[i].typ, neutrons[i].active);
+	    const collision = checkCollision(neutrons[i], cellDistance, cellMarginTop, cellMarginLeft, supermap);
 
-            	if (collision.collided) 
+        if (collision.collided) 
 		{
-		    if(collision.value == 6)
-      		    {
-			if(getRandomIntInclusive(0, Math.round(250 * DamageResist)) == 0)
-			{
-			    ControlRodHealth -= 0.5;
-			}
+		    if(collision.value == 6) // Control Rod collision
+      		{
+			    if(getRandomIntInclusive(0, Math.round(250 * DamageResist)) == 0)
+			    {
+			        ControlRodHealth -= 0.5;
+			    }
       			neutrons.splice(i, 1);
-      		    }
-      		    else if(collision.value == 7)
-      		    {
-      			if(neutrons[i].active == true && !RepairFuel)
+      		}
+      		else if(collision.value == 7) // Fuel Collision
+      		{
+      			if(neutrons[i].active == true && !RepairFuel && neutrons[i].speedType == "Slow")
       			{
 
-			    if(getRandomIntInclusive(0, Math.round(1200 * FuelEffi)) == 0)
-                            {
-                                CurrentMixtureHealth -= 0.5;
-                            }
+			        if(getRandomIntInclusive(0, Math.round(1200 * FuelEffi)) == 0)
+                    {
+                        CurrentMixtureHealth -= 0.5;
+                    }
 			    
-
       			    neutrons[i].lifetime = 0;
 				
 			    if(getRandomIntInclusive(900, 1500) * FuelEffi * (CurrentMixtureHealth / 100) >= 100)
 			    //if(getRandomIntInclusive(300 - CurrentMixtureHealth * 3, (300 - CurrentMixtureHealth * 3) * FuelEffi + 20) >= 301 - CurrentMixtureHealth * 10)
 			    {
-				for(let iii = 0; iii < FissionEvents; iii++)
+				for(let iii = 0; iii < getRandomIntInclusive(2,MaxFissionEvents); iii++)
 				{	
-					neutrons.push(new neutron(neutrons[i].x,neutrons[i].y, "shock"));
+					neutrons.push(new neutron(neutrons[i].x,neutrons[i].y, "shock", currentNeutronSpeedType));
 				}
 			    }
       			}
       		    }
 		    else if(collision.value == 9)
 		    {
-			if(getRandomIntInclusive(0,50) == 0)
-                        {
-                            supermap[collision.row][collision.col] = 0;
-                        }																		     
+			    if(getRandomIntInclusive(0,50) == 0)
+                {
+                    supermap[collision.row][collision.col] = 0;
+                }																		     
 		    }
+      		else
+      		{
+      		    if(neutrons[i].speedType == "Slow" || neutrons[i].speedType == "Normal")
+      		    {
+      		        if(getRandomIntInclusive(0,20) == 0)
+      		        {
+      		            supermap[collision.row][collision.col] += 1;
+      		        }
+      		    }
       		    else
-      		    {
-
-      		    if(neutrons[i].speed == 4)
-      		    {
-      			if(getRandomIntInclusive(0,20) == 0)
-      			{
-      			    supermap[collision.row][collision.col] += 1;
-      			}
-			
-      		    }
-      		    else{
-            	    supermap[collision.row][collision.col] += 1;
-            	    neutrons[i].speed = 4;
+                {
+                    supermap[collision.row][collision.col] += 1;
+                    neutrons[i].slowDown();
         	    }
-      		    }
       		}
-	    }
+      	}
 	}
-    }
+}
+}
 
     // Display current time multiplier on canvas
     ctx.font = "20px Arial";
@@ -1259,7 +1255,7 @@ function DrawMap()
                     ctx.fillRect(ii * cellDistance + cellMarginLeft, i * cellDistance + cellMarginTop, cellSize, cellSize);
 		    if(getRandomIntInclusive(10, 200000) <= 1 * (CurrentMixtureReactivity / 10) * CurrentMixtureHealth * FuelEffi && !RepairFuel)
 		    {
-		        neutrons.push(new neutron(ii * cellDistance + cellMarginLeft, i * cellDistance + cellMarginTop, "shock"));
+		        neutrons.push(new neutron(ii * cellDistance + cellMarginLeft, i * cellDistance + cellMarginTop, "shock", currentNeutronSpeedType));
 		    }
 		    break;
 		case 8:
@@ -1622,29 +1618,29 @@ function EightyUranium()
 
 function CadmiumRods()
 {
-        if(UpgradePoints >= 3)
-        {
-                RepairCostRods *= 1.15;
-                RodsRepairSpeed *= 1.1;
-                UpgradePoints -= 3;
-                DamageResist += 2;
-                document.getElementById("CadmiumRods").style.backgroundColor = "green";
-                document.getElementById("CadmiumRods").style.disabled = true;
-                RodsColor = "rgba(170,80,80,1)";
-        }
+    if(UpgradePoints >= 3)
+    {
+        RepairCostRods *= 1.15;
+        RodsRepairSpeed *= 1.1;
+        UpgradePoints -= 3;
+        DamageResist += 2;
+        document.getElementById("CadmiumRods").style.backgroundColor = "green";
+        document.getElementById("CadmiumRods").style.disabled = true;
+        RodsColor = "rgba(170,80,80,1)";
+    }
 }
 
 function OsmiumPipes()
 {
-        if(UpgradePoints >= 4)
-        {
-                PipesRepairSpeed *= 0.5;
-                RepairCostPipes *= 1.2;
-                UpgradePoints -= 4;
-                HeatResist += 0.5;
-                document.getElementById("OsmiumPipes").style.backgroundColor = "green";
-                document.getElementById("OsmiumPipes").style.disabled = true;
-        }
+    if(UpgradePoints >= 4)
+    {
+        PipesRepairSpeed *= 0.5;
+        RepairCostPipes *= 1.2;
+        UpgradePoints -= 4;
+        HeatResist += 0.5;
+        document.getElementById("OsmiumPipes").style.backgroundColor = "green";
+        document.getElementById("OsmiumPipes").style.disabled = true;
+    }
 }
 
 function MegaTurbine()
